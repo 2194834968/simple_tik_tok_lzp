@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/RaymondCode/simple-demo/Common"
-	"github.com/RaymondCode/simple-demo/service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -10,9 +9,10 @@ func main() {
 	r := gin.Default()
 
 	initRouter(r)
-	Common.InitMysqlConnection()
+
+	Common.MysqlDb = Common.InitMysqlConnection()
 	//test
-	service.Feed("1654003238325", 0)
+	//service.Feed("1654003238325", 0)
 	//service.Login("DemoUser", "123456")
 	//service.Register("xiaoHua", "123456")
 	//service.List(2)

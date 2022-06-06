@@ -28,7 +28,7 @@ func FollowList(c *gin.Context) {
 		Response: Common.Response{
 			StatusCode: 0,
 		},
-		UserList: []Common.User{DemoUser},
+		UserList: []Common.User{Common.DemoUser},
 	})
 }
 
@@ -38,6 +38,6 @@ func FollowerList(c *gin.Context) {
 		Response: Common.Response{
 			StatusCode: 0,
 		},
-		UserList: []Common.User{DemoUser},
+		UserList: []Common.User{Common.DemoUser},
 	})
 }

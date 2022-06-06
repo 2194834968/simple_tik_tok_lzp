@@ -21,7 +21,7 @@ type UserDatabase struct {
 }
 
 func Register(Email string, Password string) (int64, bool) {
-	db := Common.MysqlConnection()
+	db := Common.MysqlDb
 
 	//判断userName是否存在
 	var EmailExist string
@@ -55,7 +55,7 @@ func Register(Email string, Password string) (int64, bool) {
 }
 
 func Login(Email string, Password string) (int64, bool) {
-	db := Common.MysqlConnection()
+	db := Common.MysqlDb
 
 	var userid int64
 
@@ -69,14 +69,25 @@ func Login(Email string, Password string) (int64, bool) {
 
 }
 
-func UserInfo(userid int64) Common.User {
-	db := Common.MysqlConnection()
+func UserInfo(userid int64, MyUserId int64) Common.User {
+	db := Common.MysqlDb
 
 	var user Common.User
 
 	db.Table("users").Where("Id = ?", userid).Take(&user)
-	//fmt.Printf("\n AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCount %d \n", user.Total_Favorite)
-	user.IsFollow = false
+
+	if userid == MyUserId {
+		user.IsFollow = false
+	} else {
+		var followId int64
+		followId = 0
+		db.Table("follower").Select("Id").Where("Be_Follower_Id = ? AND Follower_Id = ?", userid, MyUserId).Take(&followId)
+		if followId != 0 {
+			user.IsFollow = true
+		} else {
+			user.IsFollow = false
+		}
+	}
 	/*
 		var userTest UserDatabase
 

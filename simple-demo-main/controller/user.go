@@ -39,7 +39,7 @@ func Register(c *gin.Context) {
 	password := c.Query("password")
 
 	userid, state := service.Register(username, password)
-	token, err := GenerateToken(userid)
+	token, err := Common.GenerateToken(userid)
 	if state == false {
 		c.JSON(http.StatusOK, UserResponse{
 			Response: Common.Response{StatusCode: 1, StatusMsg: "User already exist"},
@@ -62,7 +62,7 @@ func Login(c *gin.Context) {
 	password := c.Query("password")
 
 	userid, exist := service.Login(username, password)
-	token, err := GenerateToken(userid)
+	token, err := Common.GenerateToken(userid)
 	if exist {
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Common.Response{StatusCode: 0},
@@ -92,10 +92,19 @@ func UserInfo(c *gin.Context) {
 		panic("The user_id format is incorrect,user_id must be pure numbers")
 	}
 
-	if CheckToken(token) {
+	if Common.CheckToken(token) {
+		//从token中取出用户id
+		userClaims, err := Common.ParseToken(token)
+		if err != nil {
+			c.JSON(http.StatusOK, UserResponse{
+				Response: Common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
+			})
+			return
+		}
+
 		c.JSON(http.StatusOK, UserResponse{
 			Response: Common.Response{StatusCode: 0},
-			User:     service.UserInfo(userid),
+			User:     service.UserInfo(userid, userClaims.ID),
 		})
 	} else {
 		c.JSON(http.StatusOK, UserResponse{

@@ -1,10 +1,6 @@
-package controller
+package Common
 
-import (
-	"github.com/RaymondCode/simple-demo/Common"
-)
-
-var DemoVideos = []Common.Video{
+var DemoVideos = []Video{
 	{
 		Id:            1,
 		Author:        DemoUser,
@@ -16,16 +12,16 @@ var DemoVideos = []Common.Video{
 	},
 }
 
-var DemoComments = []Common.Comment{
+var DemoComments = []Comment{
 	{
-		Id:         1,
-		User:       DemoUser,
-		Content:    "Test Comment",
-		CreateDate: "05-01",
+		Id:          1,
+		User:        DemoUser,
+		Content:     "Test Comment",
+		Create_Date: "05-01",
 	},
 }
 
-var DemoUser = Common.User{
+var DemoUser = User{
 	Id:             1,
 	Name:           "TestUser",
 	Follow_Count:   0,

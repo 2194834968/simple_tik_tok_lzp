@@ -2,7 +2,6 @@ package service
 
 import (
 	"github.com/RaymondCode/simple-demo/Common"
-	"strconv"
 )
 
 //用于数据库查询的点赞结构体
@@ -12,10 +11,8 @@ type FavoriteDatebase struct {
 	User_Id  int64
 }
 
-func FavoriteList(userid string) []Common.Video {
-	db := Common.MysqlConnection()
-
-	userId, _ := strconv.ParseInt(userid, 10, 64)
+func FavoriteList(userId int64) []Common.Video {
+	db := Common.MysqlDb
 
 	var VideoIdList []int64
 	//用于获取用户喜欢的视频ID列表
@@ -35,7 +32,7 @@ func FavoriteList(userid string) []Common.Video {
 
 		videoTemp.Id = videoDatebaseTemp.Id
 		videoTemp.Title = videoDatebaseTemp.Title
-		videoTemp.Author = UserInfo(videoDatebaseTemp.Author_Id)
+		videoTemp.Author = UserInfo(videoDatebaseTemp.Author_Id, userId)
 		videoTemp.PlayUrl = videoDatebaseTemp.Play_Url
 		videoTemp.CoverUrl = videoDatebaseTemp.Cover_Url
 		videoTemp.FavoriteCount = videoDatebaseTemp.Favorite_Count
@@ -54,11 +51,8 @@ func FavoriteList(userid string) []Common.Video {
 	return VideoList
 }
 
-func FavoriteAction(video_id_string string, action_type_string string, userId int64) bool {
-	db := Common.MysqlConnection()
-
-	video_id, _ := strconv.ParseInt(video_id_string, 10, 64)
-	action_type, _ := strconv.ParseInt(action_type_string, 10, 64)
+func FavoriteAction(video_id int64, action_type int64, userId int64) bool {
+	db := Common.MysqlDb
 
 	favoriteDatebase := FavoriteDatebase{
 		Video_Id: video_id,

@@ -9,7 +9,7 @@ import (
 
 //将视频记录提交到数据库
 func Publish(AuthorId int64, finalName string) bool {
-	db := Common.MysqlConnection()
+	db := Common.MysqlDb
 
 	videoFileaddress := "http://10.30.23.55:8080/static/"
 	PlayUrl := fmt.Sprintf("%s%s.mp4", videoFileaddress, finalName)
@@ -44,8 +44,8 @@ func Publish(AuthorId int64, finalName string) bool {
 	return true
 }
 
-func List(userId int64) []Common.Video {
-	db := Common.MysqlConnection()
+func List(userId int64, myUserId int64) []Common.Video {
+	db := Common.MysqlDb
 
 	var VideoList []Common.Video
 	//用于返回的视频列表
@@ -61,7 +61,7 @@ func List(userId int64) []Common.Video {
 
 		videoTemp.Id = VideoListTemp[i].Id
 		videoTemp.Title = VideoListTemp[i].Title
-		videoTemp.Author = UserInfo(VideoListTemp[i].Author_Id)
+		videoTemp.Author = UserInfo(VideoListTemp[i].Author_Id, myUserId)
 		videoTemp.PlayUrl = VideoListTemp[i].Play_Url
 		videoTemp.CoverUrl = VideoListTemp[i].Cover_Url
 		videoTemp.FavoriteCount = VideoListTemp[i].Favorite_Count

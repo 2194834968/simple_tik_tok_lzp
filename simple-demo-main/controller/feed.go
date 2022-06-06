@@ -13,7 +13,7 @@ type FeedResponse struct {
 	NextTime  int64          `json:"next_time,omitempty"`
 }
 
-// Feed same demo video list for every request
+// Feed 获取视频列表
 func Feed(c *gin.Context) {
 	latestTime := c.Query("latest_time")
 	token := c.Query("token")
@@ -21,9 +21,9 @@ func Feed(c *gin.Context) {
 	var userid int64
 	userid = 0
 	//校验token是否有效
-	if CheckToken(token) {
+	if Common.CheckToken(token) {
 		//从token中取出用户id
-		userClaims, err := ParseToken(token)
+		userClaims, err := Common.ParseToken(token)
 		if err != nil {
 			c.JSON(http.StatusOK, Common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 			return

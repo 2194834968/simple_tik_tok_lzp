@@ -2,8 +2,10 @@ package controller
 
 import (
 	"github.com/RaymondCode/simple-demo/Common"
+	"github.com/RaymondCode/simple-demo/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 type CommentListResponse struct {
@@ -16,33 +18,73 @@ type CommentActionResponse struct {
 	Comment Common.Comment `json:"comment,omitempty"`
 }
 
-// CommentAction no practical effect, just check if token is valid
+// CommentAction 评论
 func CommentAction(c *gin.Context) {
 	token := c.Query("token")
-	actionType := c.Query("action_type")
+	video_id := c.Query("video_id")
+	action_Type := c.Query("action_type")
 
-	if user, exist := usersLoginInfo[token]; exist {
-		if actionType == "1" {
-			text := c.Query("comment_text")
-			c.JSON(http.StatusOK, CommentActionResponse{Response: Common.Response{StatusCode: 0},
-				Comment: Common.Comment{
-					Id:         1,
-					User:       user,
-					Content:    text,
-					CreateDate: "05-01",
-				}})
+	videoId, _ := strconv.ParseInt(video_id, 10, 64)
+	actionType, _ := strconv.ParseInt(action_Type, 10, 64)
+
+	var userid int64
+	userid = 0
+	//校验token是否有效
+	if Common.CheckToken(token) {
+		//从token中取出用户id
+		userClaims, err := Common.ParseToken(token)
+		if err != nil {
+			c.JSON(http.StatusOK, Common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 			return
 		}
-		c.JSON(http.StatusOK, Common.Response{StatusCode: 0})
+		userid = userClaims.ID
 	} else {
-		c.JSON(http.StatusOK, Common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+		c.JSON(http.StatusOK, Common.Response{StatusCode: 1, StatusMsg: "User doesn't login"})
 	}
+
+	if actionType == 1 {
+		commentText := c.Query("comment_text")
+
+		c.JSON(http.StatusOK, CommentActionResponse{
+			Response: Common.Response{StatusCode: 0},
+			Comment:  service.CommentAction(videoId, userid, actionType, commentText, 0),
+		})
+	} else if actionType == 2 {
+		comment_id := c.Query("comment_id")
+		commentId, _ := strconv.ParseInt(comment_id, 10, 64)
+
+		c.JSON(http.StatusOK, CommentActionResponse{
+			Response: Common.Response{StatusCode: 0},
+			Comment:  service.CommentAction(videoId, userid, actionType, "", commentId),
+		})
+	}
+
 }
 
-// CommentList all videos have same demo comment list
+// CommentList 获取某视频的评论列表
 func CommentList(c *gin.Context) {
+	video_id := c.Query("video_id")
+	token := c.Query("token")
+
+	videoId, _ := strconv.ParseInt(video_id, 10, 64)
+
+	var userid int64
+	userid = 0
+	//校验token是否有效
+	if Common.CheckToken(token) {
+		//从token中取出用户id
+		userClaims, err := Common.ParseToken(token)
+		if err != nil {
+			c.JSON(http.StatusOK, Common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+			return
+		}
+		userid = userClaims.ID
+	} else {
+		c.JSON(http.StatusOK, Common.Response{StatusCode: 1, StatusMsg: "User doesn't login"})
+	}
+
 	c.JSON(http.StatusOK, CommentListResponse{
 		Response:    Common.Response{StatusCode: 0},
-		CommentList: DemoComments,
+		CommentList: service.CommentList(videoId, userid),
 	})
 }

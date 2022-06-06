@@ -15,19 +15,19 @@ type VideoListResponse struct {
 	VideoList []Common.Video `json:"video_list"`
 }
 
-// Publish check token then save upload file to public directory
+// Publish 上传视频
 func Publish(c *gin.Context) {
 	token := c.PostForm("token")
 	fileTitle := c.PostForm("title")
 
 	//校验token是否过期
-	if !CheckToken(token) {
+	if !Common.CheckToken(token) {
 		c.JSON(http.StatusOK, Common.Response{StatusCode: 1, StatusMsg: "Token expired"})
 		return
 	}
 
 	//从token中取出用户id
-	userClaims, err := ParseToken(token)
+	userClaims, err := Common.ParseToken(token)
 	if err != nil {
 		c.JSON(http.StatusOK, Common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
@@ -73,7 +73,7 @@ func Publish(c *gin.Context) {
 	})
 }
 
-// PublishList all users have same publish video list
+// PublishList 某用户的视频上传列表
 func PublishList(c *gin.Context) {
 	user_id := c.Query("user_id")
 	token := c.Query("token")
@@ -86,10 +86,20 @@ func PublishList(c *gin.Context) {
 		panic("The user_id format is incorrect,user_id must be pure numbers")
 	}
 
-	if CheckToken(token) {
+	if Common.CheckToken(token) {
+		//从token中取出用户id
+		userClaims, err := Common.ParseToken(token)
+		if err != nil {
+			c.JSON(http.StatusOK, VideoListResponse{
+				Response:  Common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
+				VideoList: nil,
+			})
+			return
+		}
+
 		c.JSON(http.StatusOK, VideoListResponse{
 			Response:  Common.Response{StatusCode: 0},
-			VideoList: service.List(userid),
+			VideoList: service.List(userid, userClaims.ID),
 		})
 	} else {
 		c.JSON(http.StatusOK, VideoListResponse{

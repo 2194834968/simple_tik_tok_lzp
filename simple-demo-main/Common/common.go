@@ -17,16 +17,16 @@ type Video struct {
 }
 
 type Comment struct {
-	Id         int64  `json:"id,omitempty"`
-	User       User   `json:"user"`
-	Content    string `json:"content,omitempty"`
-	CreateDate string `json:"create_date,omitempty"`
+	Id          int64  `json:"id,omitempty"`
+	User        User   `json:"user"`
+	Content     string `json:"content,omitempty"`
+	Create_Date string `json:"create_date,omitempty"`
 }
 
 type User struct {
 	Id             int64  `json:"id,omitempty"`
 	Name           string `json:"name,omitempty"`
-	Total_Favorite int64  `json:"total_favorite,omitempty"`
+	Total_Favorite int64  `json:"total_favorited,omitempty"`
 	Favorite_Count int64  `json:"favorite_count,omitempty"`
 	Follow_Count   int64  `json:"follow_count,omitempty"`
 	Follower_Count int64  `json:"follower_count,omitempty"`

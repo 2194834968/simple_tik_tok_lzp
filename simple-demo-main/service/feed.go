@@ -26,7 +26,7 @@ type VideoDatebase struct {
 
 func Feed(latestTimeString string, userId int64) FeedServiceResponse {
 
-	db := Common.MysqlConnection()
+	db := Common.MysqlDb
 	//fmt.Printf("什么大苏打大苏打大啊撒打算大苏打大苏打啊大大实打实的")
 	latest_time := time.Unix(0, 0)
 	//转换时间戳
@@ -56,7 +56,7 @@ func Feed(latestTimeString string, userId int64) FeedServiceResponse {
 		}
 		videoTemp.Id = VideoListTemp[i].Id
 		videoTemp.Title = VideoListTemp[i].Title
-		videoTemp.Author = UserInfo(VideoListTemp[i].Author_Id)
+		videoTemp.Author = UserInfo(VideoListTemp[i].Author_Id, userId)
 		videoTemp.PlayUrl = VideoListTemp[i].Play_Url
 		videoTemp.CoverUrl = VideoListTemp[i].Cover_Url
 		videoTemp.FavoriteCount = VideoListTemp[i].Favorite_Count
