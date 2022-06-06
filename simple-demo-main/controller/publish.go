@@ -86,6 +86,8 @@ func PublishList(c *gin.Context) {
 		panic("The user_id format is incorrect,user_id must be pure numbers")
 	}
 
+	var myUserId int64
+	myUserId = 0
 	if Common.CheckToken(token) {
 		//从token中取出用户id
 		userClaims, err := Common.ParseToken(token)
@@ -96,15 +98,10 @@ func PublishList(c *gin.Context) {
 			})
 			return
 		}
-
-		c.JSON(http.StatusOK, VideoListResponse{
-			Response:  Common.Response{StatusCode: 0},
-			VideoList: service.List(userid, userClaims.ID),
-		})
-	} else {
-		c.JSON(http.StatusOK, VideoListResponse{
-			Response:  Common.Response{StatusCode: 1, StatusMsg: "登陆后才可查看上传列表哦"},
-			VideoList: nil,
-		})
+		myUserId = userClaims.ID
 	}
+	c.JSON(http.StatusOK, VideoListResponse{
+		Response:  Common.Response{StatusCode: 0},
+		VideoList: service.List(userid, myUserId),
+	})
 }

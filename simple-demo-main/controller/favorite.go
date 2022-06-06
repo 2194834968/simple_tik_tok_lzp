@@ -45,17 +45,20 @@ func FavoriteList(c *gin.Context) {
 
 	userId, _ := strconv.ParseInt(userid, 10, 64)
 
+	var myUserId int64
+	myUserId = 0
 	if Common.CheckToken(token) {
-		c.JSON(http.StatusOK, VideoListResponse{
-			Response:  Common.Response{StatusCode: 0},
-			VideoList: service.FavoriteList(userId),
-		})
-		return
-	} else {
-		c.JSON(http.StatusOK, VideoListResponse{
-			Response:  Common.Response{StatusCode: 1, StatusMsg: "登陆后才可查看喜欢的视频列表哦"},
-			VideoList: nil,
-		})
-		return
+		//从token中取出用户id
+		userClaims, err := Common.ParseToken(token)
+		if err != nil {
+			c.JSON(http.StatusOK, Common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+			return
+		}
+		myUserId = userClaims.ID
 	}
+
+	c.JSON(http.StatusOK, VideoListResponse{
+		Response:  Common.Response{StatusCode: 0},
+		VideoList: service.FavoriteList(userId, myUserId),
+	})
 }

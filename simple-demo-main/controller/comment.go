@@ -79,8 +79,6 @@ func CommentList(c *gin.Context) {
 			return
 		}
 		userid = userClaims.ID
-	} else {
-		c.JSON(http.StatusOK, Common.Response{StatusCode: 1, StatusMsg: "User doesn't login"})
 	}
 
 	c.JSON(http.StatusOK, CommentListResponse{

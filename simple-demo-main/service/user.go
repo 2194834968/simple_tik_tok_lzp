@@ -76,7 +76,7 @@ func UserInfo(userid int64, MyUserId int64) Common.User {
 
 	db.Table("users").Where("Id = ?", userid).Take(&user)
 
-	if userid == MyUserId {
+	if userid == MyUserId || MyUserId == 0 {
 		user.IsFollow = false
 	} else {
 		var followId int64

@@ -11,7 +11,8 @@ type FavoriteDatebase struct {
 	User_Id  int64
 }
 
-func FavoriteList(userId int64) []Common.Video {
+//用于获取UserId喜欢的视频列表
+func FavoriteList(userId int64, myUserId int64) []Common.Video {
 	db := Common.MysqlDb
 
 	var VideoIdList []int64
@@ -32,16 +33,20 @@ func FavoriteList(userId int64) []Common.Video {
 
 		videoTemp.Id = videoDatebaseTemp.Id
 		videoTemp.Title = videoDatebaseTemp.Title
-		videoTemp.Author = UserInfo(videoDatebaseTemp.Author_Id, userId)
+		videoTemp.Author = UserInfo(videoDatebaseTemp.Author_Id, myUserId)
 		videoTemp.PlayUrl = videoDatebaseTemp.Play_Url
 		videoTemp.CoverUrl = videoDatebaseTemp.Cover_Url
 		videoTemp.FavoriteCount = videoDatebaseTemp.Favorite_Count
 		videoTemp.CommentCount = videoDatebaseTemp.Comment_Count
 
-		var FavoriteId int64
-		db.Table("favorite").Select("Id").Where("video_id = ? AND user_id = ?", videoTemp.Id, userId).Find(&FavoriteId)
-		if FavoriteId != 0 {
-			videoTemp.IsFavorite = true
+		if myUserId != 0 {
+			var FavoriteId int64
+			db.Table("favorite").Select("Id").Where("video_id = ? AND user_id = ?", videoTemp.Id, myUserId).Find(&FavoriteId)
+			if FavoriteId != 0 {
+				videoTemp.IsFavorite = true
+			} else {
+				videoTemp.IsFavorite = false
+			}
 		} else {
 			videoTemp.IsFavorite = false
 		}

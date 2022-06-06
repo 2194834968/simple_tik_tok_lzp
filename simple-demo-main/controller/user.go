@@ -8,21 +8,6 @@ import (
 	"strconv"
 )
 
-// usersLoginInfo use map to store user info, and key is username+password for demo
-// user data will be cleared every time the server starts
-// test data: username=zhanglei, password=douyin
-var usersLoginInfo = map[string]Common.User{
-	"zhangleidouyin": {
-		Id:             1,
-		Name:           "zhanglei",
-		Follow_Count:   10,
-		Follower_Count: 5,
-		IsFollow:       true,
-	},
-}
-
-var userIdSequence = int64(1)
-
 type UserLoginResponse struct {
 	Common.Response
 	UserId int64  `json:"user_id,omitempty"`
@@ -92,6 +77,8 @@ func UserInfo(c *gin.Context) {
 		panic("The user_id format is incorrect,user_id must be pure numbers")
 	}
 
+	var myUserId int64
+	myUserId = 0
 	if Common.CheckToken(token) {
 		//从token中取出用户id
 		userClaims, err := Common.ParseToken(token)
@@ -101,14 +88,11 @@ func UserInfo(c *gin.Context) {
 			})
 			return
 		}
-
-		c.JSON(http.StatusOK, UserResponse{
-			Response: Common.Response{StatusCode: 0},
-			User:     service.UserInfo(userid, userClaims.ID),
-		})
-	} else {
-		c.JSON(http.StatusOK, UserResponse{
-			Response: Common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
-		})
+		myUserId = userClaims.ID
 	}
+
+	c.JSON(http.StatusOK, UserResponse{
+		Response: Common.Response{StatusCode: 0},
+		User:     service.UserInfo(userid, myUserId),
+	})
 }
