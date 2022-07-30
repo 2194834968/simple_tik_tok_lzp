@@ -2,7 +2,8 @@
 
 ## 抖音项目服务端简单实现
 
-具体功能内容参考飞书说明文档
+安卓apk下载以及apk文档：https://bytedance.feishu.cn/docs/doccnM9KkBAdyDhg8qaeGlIz7S7#
+接口文档https://www.apifox.cn/apidoc/shared-8cc50618-0da6-4d5e-a398-76f3b8f766c5/api-18345145
 
 工程需要创建数据库才能运行，数据库名simple_tik_tok，定义见测试数据
 
@@ -11,8 +12,6 @@ go build && ./simple-demo
 ```
 
 ### 功能说明
-
-接口已完善，但根据青训营规定，文档暂不开放
 
 * 用户数据库中尚未包含用户头像链接avatar，个性签名signature，背景图链接background_image
 * 用户数据库中新注册用户，用户名为账号名
