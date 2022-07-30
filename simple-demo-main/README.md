@@ -3,6 +3,7 @@
 ## 抖音项目服务端简单实现
 
 安卓apk下载以及apk文档：https://bytedance.feishu.cn/docs/doccnM9KkBAdyDhg8qaeGlIz7S7#
+
 接口文档https://www.apifox.cn/apidoc/shared-8cc50618-0da6-4d5e-a398-76f3b8f766c5/api-18345145
 
 工程需要创建数据库才能运行，数据库名simple_tik_tok，定义见测试数据
